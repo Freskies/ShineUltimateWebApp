@@ -16,7 +16,6 @@ if (isset($_POST['username']) && isset($_POST['password']))
 {
 	require_once 'Libraries/Connection.php';
 	$conn = new Connection('shine');
-    //TODO change user
 	$query = "SELECT password FROM users WHERE username = ?;";
 	$result = $conn->execute($query, [$_POST["username"]]);
 	if (password_verify($_POST["password"], $result[0]["password"] ?? ""))
