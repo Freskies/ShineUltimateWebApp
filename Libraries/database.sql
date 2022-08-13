@@ -37,7 +37,8 @@ CREATE TABLE `athlete`
     `province`            VARCHAR(255) NOT NULL,
     `phone`               VARCHAR(255),
     `email`               VARCHAR(255),
-    `medical_certificate` DATE DEFAULT NULL,
+    `medical_certificate` DATE    DEFAULT NULL,
+    `auto_certificate`    BOOLEAN DEFAULT FALSE,
     PRIMARY KEY (`id`)
 ) ENGINE = InnoDB;
 
@@ -61,21 +62,55 @@ CREATE TABLE `course`
     PRIMARY KEY (`id`)
 ) ENGINE = InnoDB;
 
+# admin role for the team
+CREATE TABLE `role`
+(
+    `id`          INT          NOT NULL AUTO_INCREMENT,
+    `name`        VARCHAR(32)  NOT NULL,
+    `description` VARCHAR(255) NOT NULL,
+    PRIMARY KEY (`id`)
+) ENGINE = InnoDB;
+
 # members of team shine
 CREATE TABLE `team`
 (
-    `id` INT,
+    `id`   INT,
+    `role` VARCHAR(255) NOT NULL,
     PRIMARY KEY (`id`),
     FOREIGN KEY (`id`) REFERENCES `athlete` (`id`)
 ) ENGINE = InnoDB;
 
 # type_of_task
-CREATE TABLE `type_of_task`
+CREATE TABLE `type_of_task_in_lesson`
 (
     `id`        INT           NOT NULL AUTO_INCREMENT,
     `name`      VARCHAR(32)   NOT NULL,
     `pay_per_h` DECIMAL(5, 2) NOT NULL,
     PRIMARY KEY (`id`)
+) ENGINE = InnoDB;
+
+# lesson
+CREATE TABLE `lesson`
+(
+    `id`        INT           NOT NULL AUTO_INCREMENT,
+    `course_id` INT           NOT NULL,
+    `duration`  DECIMAL(2, 1) NOT NULL,
+    `date`      DATE          NOT NULL,
+    `place`     VARCHAR(255)  NOT NULL,
+    PRIMARY KEY (`id`),
+    FOREIGN KEY (`course_id`) REFERENCES `course` (`id`)
+) ENGINE = InnoDB;
+
+# lesson_team (person of team who is teaching)
+CREATE TABLE `lesson_team`
+(
+    `lesson_id`       INT NOT NULL,
+    `team_id`         INT NOT NULL,
+    `type_of_task_id` INT NOT NULL,
+    PRIMARY KEY (`lesson_id`, `team_id`),
+    FOREIGN KEY (`lesson_id`) REFERENCES `lesson` (`id`),
+    FOREIGN KEY (`team_id`) REFERENCES `team` (`id`),
+    FOREIGN KEY (`type_of_task_id`) REFERENCES `type_of_task_in_lesson` (`id`)
 ) ENGINE = InnoDB;
 
 # every other task that isn't a coaching session in a course
@@ -92,29 +127,6 @@ CREATE TABLE `task`
     FOREIGN KEY (`team_id`) REFERENCES `team` (`id`)
 ) ENGINE = InnoDB;
 
-# lesson
-CREATE TABLE `lesson`
-(
-    `id`        INT           NOT NULL AUTO_INCREMENT,
-    `course_id` INT           NOT NULL,
-    `duration`  DECIMAL(2, 1) NOT NULL,
-    `date`      DATE          NOT NULL,
-    PRIMARY KEY (`id`),
-    FOREIGN KEY (`course_id`) REFERENCES `course` (`id`)
-) ENGINE = InnoDB;
-
-# lesson_team (person of team who is teaching)
-CREATE TABLE `lesson_team`
-(
-    `lesson_id`       INT NOT NULL,
-    `team_id`         INT NOT NULL,
-    `type_of_task_id` INT NOT NULL,
-    PRIMARY KEY (`lesson_id`, `team_id`),
-    FOREIGN KEY (`lesson_id`) REFERENCES `lesson` (`id`),
-    FOREIGN KEY (`team_id`) REFERENCES `team` (`id`),
-    FOREIGN KEY (`type_of_task_id`) REFERENCES `type_of_task` (`id`)
-) ENGINE = InnoDB;
-
 # this is only for the app
 CREATE TABLE `users`
 (
@@ -126,10 +138,17 @@ CREATE TABLE `users`
     FOREIGN KEY (`team`) REFERENCES `team` (`id`)
 ) ENGINE = InnoDB;
 
-INSERT INTO `type_of_task` (`name`, `pay_per_h`)
-VALUES ('learning', 0.00),
-       ('assistant', 7.00),
-       ('coaching', 12.00);
+INSERT INTO `role` (`id`, `name`, `description`)
+VALUES (1, 'Presidente', 'presidente della associazione'),
+       (2, 'Vide-presidente', 'vice presidente della associazione'),
+       (3, 'Tesoriere', 'colui che gestisce le entrate e le uscite della associazione'),
+       (4, 'Consigliere', 'aiuta nelle decisioni'),
+       (5, '_', 'fa parte del team Shine ma non ha nessun ruolo nel consiglio direttivo');
+
+INSERT INTO `type_of_task_in_lesson` (`id`, `name`, `pay_per_h`)
+VALUES (1, 'learning', 0.00),
+       (2, 'assistant', 7.00),
+       (3, 'coaching', 12.00);
 
 INSERT INTO `course` (`name`, `year`, `is_active`)
 VALUES ('4-5 2021-2022', 2021, FALSE),
@@ -140,12 +159,13 @@ VALUES ('4-5 2021-2022', 2021, FALSE),
        ('14+ 2021-2022', 2021, FALSE),
        ('Adults 2021-2022', 2021, FALSE);
 
-INSERT INTO `athlete` (`surname`, `name`, `birthdate`, `address`, `city`, `cap`, `province`, `phone`, `email`)
+INSERT INTO `athlete` (`surname`, `name`, `birthdate`, `address`, `city`, `cap`, `province`, `phone`, `email`,
+                       `medical_certificate`, `auto_certificate`)
 VALUES ('Giacchini', 'Valerio', '2003-10-20', 'Via G. Morgagni 49', 'Classe', '48124', 'RA', '3347251873',
-        'portasfiga1099@gmail.com');
+        'portasfiga1099@gmail.com', '2022-10-15', TRUE);
 
-INSERT INTO `team` (`id`)
-VALUES (1);
+INSERT INTO `team` (`id`, `role`)
+VALUES (1, 4);
 
 INSERT INTO `users` (`username`, `password`, `team`)
 VALUES ('Valerio', '$2y$10$iz6wL4GZKyc6uSUgZ0Qkp.lRreQUJYgPC.tmsqyl9SllT2tj9I6L6', 1);
