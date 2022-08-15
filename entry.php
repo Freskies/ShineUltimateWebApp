@@ -34,18 +34,12 @@ $courses_list = $conn->execute($query);
     <h1>Welcome <?php echo $_SESSION['user'] ?></h1>
     <div>
         <h2>Courses</h2>
-        <!-- create a button for every course in course_list -->
-		<?php foreach ($courses_list
-
-		               as $course) {
-			if (!$course['is_active']) { ?>
-                <a href="User/course.php?id=<?php echo $course['id'] ?>"
-                   class="btn btn-secondary"><?php echo $course['name'] ?></a>
-			<?php } else { ?>
-                <a href="User/course.php?id=<?php echo $course['id'] ?>"
-                   class="btn btn-primary"><?php echo $course['name'] ?></a>
-			<?php }
-		} ?>
+        <!-- create button for every course -->
+        <?php foreach ($courses_list as $course) { ?>
+            <a href="User/course.php?id=<?php echo $course['id'] ?>"
+               class="btn <?php echo $course['is_active'] ? "btn-primary" : "btn-secondary"; ?>">
+				<?php echo $course['name'] ?></a>
+		<?php } ?>
 
         <!-- Show all / Show only active courses button -->
 		<?php if (isset($_GET['all'])) { ?>
