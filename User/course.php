@@ -12,8 +12,6 @@ if (!isset($_SESSION['user']))
 	header('Location: index.php');
 
 require_once '../Libraries/Connection.php';
-
-
 ?>
 
 <!DOCTYPE html>
