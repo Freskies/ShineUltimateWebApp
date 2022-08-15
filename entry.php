@@ -17,8 +17,6 @@ require_once 'Libraries/Connection.php';
 $conn = new Connection('shine');
 $query = sprintf('SELECT * FROM course %s;', isset($_GET['all']) ? '' : 'WHERE is_active = TRUE;');
 $courses_list = $conn->execute($query);
-
-require_once 'Libraries/Connection.php';
 ?>
 
 <!DOCTYPE html>
@@ -41,7 +39,8 @@ require_once 'Libraries/Connection.php';
 
 		               as $course) {
 			if (!$course['is_active']) { ?>
-                <button class="btn btn-secondary" disabled><?php echo $course['name'] ?></button>
+                <a href="User/course.php?id=<?php echo $course['id'] ?>"
+                   class="btn btn-secondary"><?php echo $course['name'] ?></a>
 			<?php } else { ?>
                 <a href="User/course.php?id=<?php echo $course['id'] ?>"
                    class="btn btn-primary"><?php echo $course['name'] ?></a>
