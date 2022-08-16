@@ -11,6 +11,10 @@ session_start();
 if (!isset($_SESSION['user']))
 	header('Location: index.php');
 
+// if the id of the course is not set, redirect to entry page
+if (!isset($_GET['id']))
+	echo '<script>alert("Course not found"); window.location.href = "../entry.php";</script>';
+
 require_once '../Libraries/Connection.php';
 ?>
 
@@ -27,8 +31,9 @@ require_once '../Libraries/Connection.php';
     <link rel="stylesheet" href="course.css">
 </head>
 <body>
-<div>
+<div class="container">
     <a class="btn btn-primary" onclick="create_lesson('create_lesson_container')">Create new lesson</a>
+    <a class="btn btn-primary" href="students.php?id=<?php echo $_GET['id']; ?>">Students</a>
     <a class="btn btn-secondary" href="../entry.php">Home</a>
 </div>
 

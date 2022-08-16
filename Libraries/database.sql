@@ -39,6 +39,7 @@ CREATE TABLE `athlete`
     `email`               VARCHAR(255),
     `medical_certificate` DATE    DEFAULT NULL,
     `auto_certificate`    BOOLEAN DEFAULT FALSE,
+    `course_id`           INT     DEFAULT NULL,
     PRIMARY KEY (`id`)
 ) ENGINE = InnoDB;
 
@@ -150,19 +151,25 @@ VALUES (1, 'learning', 0.00),
        (2, 'assistant', 7.00),
        (3, 'coaching', 12.00);
 
-INSERT INTO `course` (`name`, `year`, `is_active`)
-VALUES ('4-5 2021-2022', 2021, FALSE),
-       ('6-7 2021-2022', 2021, FALSE),
-       ('8-9 2021-2022', 2021, FALSE),
-       ('10-11 2021-2022', 2021, FALSE),
-       ('12-13 2021-2022', 2021, TRUE),
-       ('14+ 2021-2022', 2021, FALSE),
-       ('Adults 2021-2022', 2021, FALSE);
+INSERT INTO `course` (`id`, `name`, `year`, `is_active`)
+VALUES (1, '4-5 2021-2022', 2021, FALSE),
+       (2, '6-7 2021-2022', 2021, FALSE),
+       (3, '8-9 2021-2022', 2021, FALSE),
+       (4, '10-11 2021-2022', 2021, FALSE),
+       (5, '12-13 2021-2022', 2021, TRUE),
+       (6, '14+ 2021-2022', 2021, FALSE),
+       (7, 'Adults 2021-2022', 2021, FALSE);
 
 INSERT INTO `athlete` (`surname`, `name`, `birthdate`, `address`, `city`, `cap`, `province`, `phone`, `email`,
-                       `medical_certificate`, `auto_certificate`)
+                       `medical_certificate`, `auto_certificate`, `course_id`)
 VALUES ('Giacchini', 'Valerio', '2003-10-20', 'Via G. Morgagni 49', 'Classe', '48124', 'RA', '3347251873',
-        'portasfiga1099@gmail.com', '2022-10-15', TRUE);
+        'portasfiga1099@gmail.com', '2022-10-15', TRUE, NULL),
+       ('Biagi', 'Giacomo', '2003-10-20', 'Via G. Morgagni 49', 'Classe', '48124', 'RA', '3347251873',
+        'portasfiga1099@gmail.com', '2022-10-15', TRUE, 5),
+       ('Pierantoni', 'Lorenzo', '2003-10-20', 'Via G. Morgagni 49', 'Classe', '48124', 'RA', '3347251873',
+        'portasfiga1099@gmail.com', '2022-10-15', TRUE, 5),
+       ('Gianmattina', 'Mattia', '2003-10-20', 'Via G. Morgagni 49', 'Classe', '48124', 'RA', '3347251873',
+        'portasfiga1099@gmail.com', '2022-10-15', TRUE, 4);
 
 INSERT INTO `team` (`id`, `role`)
 VALUES (1, 4);
