@@ -56,10 +56,12 @@ CREATE TABLE `athlete_tutor`
 # course
 CREATE TABLE `course`
 (
-    `id`        INT         NOT NULL AUTO_INCREMENT,
-    `name`      VARCHAR(32) NOT NULL,
-    `year`      INT         NOT NULL, # year when the course is started
-    `is_active` BOOLEAN     NOT NULL DEFAULT TRUE,
+    `id`                 INT           NOT NULL AUTO_INCREMENT,
+    `name`               VARCHAR(32)   NOT NULL,
+    `year`               INT           NOT NULL, # year when the course is started
+    `default_start_time` TIME          NOT NULL, # default start time for the course
+    `default_duration`   DECIMAL(4, 2) NOT NULL, # default duration for lessons in the course
+    `is_active`          BOOLEAN       NOT NULL DEFAULT TRUE,
     PRIMARY KEY (`id`)
 ) ENGINE = InnoDB;
 
@@ -151,19 +153,31 @@ VALUES (1, 'learning', 0.00),
        (2, 'assistant', 7.00),
        (3, 'coaching', 12.00);
 
-INSERT INTO `course` (`id`, `name`, `year`, `is_active`)
-VALUES (1, '4-5 2021-2022', 2021, FALSE),
-       (2, '6-7 2021-2022', 2021, FALSE),
-       (3, '8-9 2021-2022', 2021, FALSE),
-       (4, '10-11 2021-2022', 2021, FALSE),
-       (5, '12-13 2021-2022', 2021, TRUE),
-       (6, '14+ 2021-2022', 2021, FALSE),
-       (7, 'Adults 2021-2022', 2021, FALSE);
+INSERT INTO `course` (`id`, `name`, `year`, `default_start_time`, `default_duration`, `is_active`)
+VALUES (1, '4-5 2021-2022', 2021, '18:00', 1, FALSE),
+       (2, '6-7 2021-2022', 2021, '18:00', 1, FALSE),
+       (3, '8-9 2021-2022', 2021, '18:00', 1.30, FALSE),
+       (4, '10-11 2021-2022', 2021, '19:30', 1.30, FALSE),
+       (5, '12-13 2021-2022', 2021, '18:00', 2, TRUE),
+       (6, '14+ 2021-2022', 2021, '19:00', 2, FALSE),
+       (7, 'Adults 2021-2022', 2021, '20:00', 1.30, FALSE);
 
 INSERT INTO `athlete` (`surname`, `name`, `birthdate`, `address`, `city`, `cap`, `province`, `phone`, `email`,
                        `medical_certificate`, `auto_certificate`, `course_id`)
 VALUES ('Giacchini', 'Valerio', '2003-10-20', 'Via G. Morgagni 49', 'Classe', '48124', 'RA', '3347251873',
         'portasfiga1099@gmail.com', '2022-10-15', TRUE, NULL),
+       ('Biagi', 'Giacomo', '2003-10-20', 'Via G. Morgagni 49', 'Classe', '48124', 'RA', '3347251873',
+        'portasfiga1099@gmail.com', '2022-10-15', TRUE, 5),
+       ('Pierantoni', 'Lorenzo', '2003-10-20', 'Via G. Morgagni 49', 'Classe', '48124', 'RA', '3347251873',
+        'portasfiga1099@gmail.com', '2022-10-15', TRUE, 5),
+       ('Biagi', 'Giacomo', '2003-10-20', 'Via G. Morgagni 49', 'Classe', '48124', 'RA', '3347251873',
+        'portasfiga1099@gmail.com', '2022-10-15', TRUE, 5),
+       ('Pierantoni', 'Lorenzo', '2003-10-20', 'Via G. Morgagni 49', 'Classe', '48124', 'RA', '3347251873',
+        'portasfiga1099@gmail.com', '2022-10-15', TRUE, 5),
+       ('Biagi', 'Giacomo', '2003-10-20', 'Via G. Morgagni 49', 'Classe', '48124', 'RA', '3347251873',
+        'portasfiga1099@gmail.com', '2022-10-15', TRUE, 5),
+       ('Pierantoni', 'Lorenzo', '2003-10-20', 'Via G. Morgagni 49', 'Classe', '48124', 'RA', '3347251873',
+        'portasfiga1099@gmail.com', '2022-10-15', TRUE, 5),
        ('Biagi', 'Giacomo', '2003-10-20', 'Via G. Morgagni 49', 'Classe', '48124', 'RA', '3347251873',
         'portasfiga1099@gmail.com', '2022-10-15', TRUE, 5),
        ('Pierantoni', 'Lorenzo', '2003-10-20', 'Via G. Morgagni 49', 'Classe', '48124', 'RA', '3347251873',
