@@ -20,7 +20,7 @@ require_once '../Libraries/Connection.php';
 // get the list of athlete in this course
 $conn = new Connection('shine');
 $query = "SELECT `id`, `surname`, `name`, phone, email, medical_certificate, auto_certificate
-FROM athlete WHERE course_id = {$_GET['id']};";
+FROM athlete WHERE course_id = {$_GET['id']} ORDER BY `surname`, `name`;";
 $athletes_list = $conn->execute($query);
 ?>
 

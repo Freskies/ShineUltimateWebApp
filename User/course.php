@@ -19,8 +19,8 @@ require_once '../Libraries/Connection.php';
 $conn = new Connection('shine');
 
 // get the list of athlete in this course
-$query = "SELECT `id`, `surname`, `medical_certificate`, `auto_certificate`
-FROM athlete WHERE course_id = {$_GET['id']};";
+$query = "SELECT `id`, `surname`, `name`, `medical_certificate`, `auto_certificate`
+FROM athlete WHERE course_id = {$_GET['id']} ORDER BY `surname`, `name`";
 $athletes_list = $conn->execute($query);
 
 // get the default_start_time of this course
@@ -72,8 +72,9 @@ $default_duration = $conn->execute($query)[0]['default_duration'];
                     {$athlete['surname']} {$athlete['name']}</label>
             </div>";
 		} ?>
-        <button type="submit" class="btn btn-success">Create</button>
-        <button type="button" class="btn btn-danger" onclick="closeForm('create_lesson_container')">Close</button>
+        <!-- create 2 button: create lesson on the left and close (red button) pon the right -->
+        <button type="submit" class="btn-primary" onclick="create_lesson('create_lesson_container')">Create</button>
+        <button type="button" class="btn-danger" onclick="closeForm('create_lesson_container')">Close</button>
     </form>
 </div>
 </body>
