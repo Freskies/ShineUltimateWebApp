@@ -44,11 +44,18 @@ $default_duration = $conn->execute($query)[0]['default_duration'];
     <script src="course.js"></script>
     <link rel="stylesheet" href="course.css">
 </head>
-<body>
+<body id="body">
 <div class="container">
     <a class="btn btn-primary" onclick="create_lesson('create_lesson_container')">Create new lesson</a>
     <a class="btn btn-primary" href="students.php?id=<?php echo $_GET['id']; ?>">Students</a>
     <a class="btn btn-secondary" href="../entry.php">Home</a>
+</div>
+
+<div class="container">
+    <div>
+        <h2>Athletes</h2>
+        <?php echo Connection::generate_table($athletes_list); ?>
+    </div>
 </div>
 
 <div class="form-popup" id="create_lesson_container">

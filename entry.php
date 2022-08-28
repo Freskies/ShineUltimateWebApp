@@ -48,6 +48,12 @@ $courses_list = $conn->execute($query);
             <a href="entry.php?all" class="btn btn-primary">Show all</a>
 		<?php } ?>
     </div>
+    <div>
+        <!-- manage courses button and manage athletes -->
+        <h2>Admin</h2>
+        <a href="Admin/manage_courses.php" class="btn btn-primary">Manage courses</a>
+        <a href="Admin/manage_athletes.php" class="btn btn-primary">Manage athletes</a>
+    </div>
     <br><a href="logout.php">logout</a>
 </div>
 </body>

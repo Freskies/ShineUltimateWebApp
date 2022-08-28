@@ -11,23 +11,27 @@ USE `shine`;
 # tutor (for underage athletes)
 CREATE TABLE `tutor`
 (
-    `id`        INT          NOT NULL AUTO_INCREMENT,
-    `name`      VARCHAR(255) NOT NULL,
-    `surname`   VARCHAR(255) NOT NULL,
-    `email`     VARCHAR(255) NOT NULL,
-    `phone`     VARCHAR(14)  NOT NULL,
-    `address`   VARCHAR(255) NOT NULL,
-    `city`      VARCHAR(255) NOT NULL,
-    `cap`       VARCHAR(255) NOT NULL,
-    `province`  VARCHAR(255) NOT NULL,
-    `birthdate` DATE         NOT NULL,
-    PRIMARY KEY (`id`)
+    `id`          INT          NOT NULL AUTO_INCREMENT,
+    `fiscal_code` VARCHAR(10),
+    `name`        VARCHAR(255) NOT NULL,
+    `surname`     VARCHAR(255) NOT NULL,
+    `email`       VARCHAR(255),
+    `phone`       VARCHAR(14)  NOT NULL,
+    `address`     VARCHAR(255) NOT NULL,
+    `city`        VARCHAR(255) NOT NULL,
+    `cap`         VARCHAR(255) NOT NULL,
+    `province`    VARCHAR(255) NOT NULL,
+    `birthdate`   DATE         NOT NULL,
+    `athlete_id`  INT          NOT NULL,
+    PRIMARY KEY (`id`),
+    FOREIGN KEY (`athlete_id`) REFERENCES `athlete` (`id`)
 ) ENGINE = InnoDB;
 
 # athlete
 CREATE TABLE `athlete`
 (
     `id`                  INT          NOT NULL AUTO_INCREMENT,
+    `fiscal_code`         VARCHAR(255) NOT NULL,
     `surname`             VARCHAR(255) NOT NULL,
     `name`                VARCHAR(255) NOT NULL,
     `birthdate`           DATE         NOT NULL,
@@ -41,16 +45,6 @@ CREATE TABLE `athlete`
     `auto_certificate`    BOOLEAN DEFAULT FALSE,
     `course_id`           INT     DEFAULT NULL,
     PRIMARY KEY (`id`)
-) ENGINE = InnoDB;
-
-# athlete_tutor (for underage athletes)
-CREATE TABLE `athlete_tutor`
-(
-    `athlete_id` INT NOT NULL,
-    `tutor_id`   INT NOT NULL,
-    PRIMARY KEY (`athlete_id`, `tutor_id`),
-    FOREIGN KEY (`athlete_id`) REFERENCES `athlete` (`id`),
-    FOREIGN KEY (`tutor_id`) REFERENCES `tutor` (`id`)
 ) ENGINE = InnoDB;
 
 # course
@@ -78,9 +72,10 @@ CREATE TABLE `role`
 CREATE TABLE `team`
 (
     `id`   INT,
-    `role` VARCHAR(255) NOT NULL,
+    `role_id` INT,
     PRIMARY KEY (`id`),
-    FOREIGN KEY (`id`) REFERENCES `athlete` (`id`)
+    FOREIGN KEY (`id`) REFERENCES `athlete` (`id`),
+    FOREIGN KEY (`role_id`) REFERENCES `role` (`id`)
 ) ENGINE = InnoDB;
 
 # type_of_task
@@ -115,6 +110,8 @@ CREATE TABLE `lesson_team`
     FOREIGN KEY (`team_id`) REFERENCES `team` (`id`),
     FOREIGN KEY (`type_of_task_id`) REFERENCES `type_of_task_in_lesson` (`id`)
 ) ENGINE = InnoDB;
+
+# TODO tabella presenze
 
 # every other task that isn't a coaching session in a course
 CREATE TABLE `task`
