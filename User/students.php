@@ -36,10 +36,19 @@ $athletes_list = $conn->execute($query);
 </head>
 <body>
 <div class="container">
-	<div>
-		<h2>Athletes</h2>
-		<?php echo Connection::generate_table($athletes_list); ?>
-	</div>
+    <!-- TODO toolbar -->
+    <div class="container">
+        <div>
+            <h2>Athletes</h2>
+            <ul class="list-group">
+				<?php
+				foreach($athletes_list as $athlete) {
+					echo "<li class='list-group-item'>{$athlete['surname']} {$athlete['name']}</li>";
+				}
+				?>
+            </ul>
+        </div>
+    </div>
 	<br><a href="course.php?id=<?php echo $_GET['id']; ?>">back</a>
 </div>
 </body>

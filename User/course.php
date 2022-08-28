@@ -51,13 +51,6 @@ $default_duration = $conn->execute($query)[0]['default_duration'];
     <a class="btn btn-secondary" href="../entry.php">Home</a>
 </div>
 
-<div class="container">
-    <div>
-        <h2>Athletes</h2>
-        <?php echo Connection::generate_table($athletes_list); ?>
-    </div>
-</div>
-
 <div class="form-popup" id="create_lesson_container">
     <form action="course.php" class="form-container">
         <h1>Create new lesson</h1>
