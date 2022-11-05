@@ -8,23 +8,10 @@ DROP DATABASE IF EXISTS `shine`;
 CREATE DATABASE `shine`;
 USE `shine`;
 
-# tutor (for underage athletes)
-CREATE TABLE `tutor`
+CREATE TABLE `year`
 (
-    `id`          INT          NOT NULL AUTO_INCREMENT,
-    `fiscal_code` VARCHAR(10),
-    `name`        VARCHAR(255) NOT NULL,
-    `surname`     VARCHAR(255) NOT NULL,
-    `email`       VARCHAR(255),
-    `phone`       VARCHAR(14)  NOT NULL,
-    `address`     VARCHAR(255) NOT NULL,
-    `city`        VARCHAR(255) NOT NULL,
-    `cap`         VARCHAR(255) NOT NULL,
-    `province`    VARCHAR(255) NOT NULL,
-    `birthdate`   DATE         NOT NULL,
-    `athlete_id`  INT          NOT NULL,
-    PRIMARY KEY (`id`),
-    FOREIGN KEY (`athlete_id`) REFERENCES `athlete` (`id`)
+    `year` varchar(9) NOT NULL,
+    PRIMARY KEY (`year`)
 ) ENGINE = InnoDB;
 
 # athlete
@@ -47,16 +34,35 @@ CREATE TABLE `athlete`
     PRIMARY KEY (`id`)
 ) ENGINE = InnoDB;
 
+# tutor (for underage athletes)
+CREATE TABLE `tutor`
+(
+    `id`          INT          NOT NULL AUTO_INCREMENT,
+    `fiscal_code` VARCHAR(10),
+    `name`        VARCHAR(255) NOT NULL,
+    `surname`     VARCHAR(255) NOT NULL,
+    `email`       VARCHAR(255),
+    `phone`       VARCHAR(14)  NOT NULL,
+    `address`     VARCHAR(255) NOT NULL,
+    `city`        VARCHAR(255) NOT NULL,
+    `cap`         VARCHAR(255) NOT NULL,
+    `province`    VARCHAR(255) NOT NULL,
+    `birthdate`   DATE         NOT NULL,
+    `athlete_id`  INT          NOT NULL,
+    PRIMARY KEY (`id`),
+    FOREIGN KEY (`athlete_id`) REFERENCES `athlete` (`id`)
+) ENGINE = InnoDB;
+
 # course
 CREATE TABLE `course`
 (
     `id`                 INT           NOT NULL AUTO_INCREMENT,
     `name`               VARCHAR(32)   NOT NULL,
-    `year`               INT           NOT NULL, # year when the course is started
+    `year`               VARCHAR(9)    NOT NULL, # year when the course is started
     `default_start_time` TIME          NOT NULL, # default start time for the course
     `default_duration`   DECIMAL(4, 2) NOT NULL, # default duration for lessons in the course
-    `is_active`          BOOLEAN       NOT NULL DEFAULT TRUE,
-    PRIMARY KEY (`id`)
+    PRIMARY KEY (`id`),
+    FOREIGN KEY (`year`) REFERENCES `year` (`year`)
 ) ENGINE = InnoDB;
 
 # admin role for the team
@@ -71,7 +77,7 @@ CREATE TABLE `role`
 # members of team shine
 CREATE TABLE `team`
 (
-    `id`   INT,
+    `id`      INT,
     `role_id` INT,
     PRIMARY KEY (`id`),
     FOREIGN KEY (`id`) REFERENCES `athlete` (`id`),
@@ -138,6 +144,13 @@ CREATE TABLE `users`
     FOREIGN KEY (`team`) REFERENCES `team` (`id`)
 ) ENGINE = InnoDB;
 
+INSERT INTO `year` (`year`)
+VALUES ('2019-2020'),
+       ('2020-2021'),
+       ('2021-2022'),
+       ('2022-2023'),
+       ('2023-2024');
+
 INSERT INTO `role` (`id`, `name`, `description`)
 VALUES (1, 'Presidente', 'presidente della associazione'),
        (2, 'Vide-presidente', 'vice presidente della associazione'),
@@ -150,39 +163,50 @@ VALUES (1, 'learning', 0.00),
        (2, 'assistant', 7.00),
        (3, 'coaching', 12.00);
 
-INSERT INTO `course` (`id`, `name`, `year`, `default_start_time`, `default_duration`, `is_active`)
-VALUES (1, '4-5 2021-2022', 2021, '18:00', 1, FALSE),
-       (2, '6-7 2021-2022', 2021, '18:00', 1, FALSE),
-       (3, '8-9 2021-2022', 2021, '18:00', 1.30, FALSE),
-       (4, '10-11 2021-2022', 2021, '19:30', 1.30, FALSE),
-       (5, '12-13 2021-2022', 2021, '18:00', 2, TRUE),
-       (6, '14+ 2021-2022', 2021, '19:00', 2, FALSE),
-       (7, 'Adults 2021-2022', 2021, '20:00', 1.30, FALSE);
+INSERT INTO `course` (`id`, `name`, `year`, `default_start_time`, `default_duration`)
+VALUES (1, '4-5', '2021-2022', '18:00', 1),
+       (2, '6-7', '2021-2022', '18:00', 1),
+       (3, '8-9', '2021-2022', '18:00', 1.30),
+       (4, '10-11', '2021-2022', '19:30', 1.30),
+       (5, '12-13', '2021-2022', '18:00', 2),
+       (6, '14+', '2021-2022', '19:00', 2),
+       (7, 'Adults', '2021-2022', '20:00', 1.30);
 
-INSERT INTO `athlete` (`surname`, `name`, `birthdate`, `address`, `city`, `cap`, `province`, `phone`, `email`,
+INSERT INTO `athlete` (`surname`, `name`, `fiscal_code`, `birthdate`, `address`, `city`, `cap`, `province`, `phone`,
+                       `email`,
                        `medical_certificate`, `auto_certificate`, `course_id`)
-VALUES ('Giacchini', 'Valerio', '2003-10-20', 'Via G. Morgagni 49', 'Classe', '48124', 'RA', '3347251873',
+VALUES ('Giacchini', 'Valerio', 'GCCVLR03TTTTTTTT', '2003-10-20', 'Via G. Morgagni 49', 'Classe', '48124', 'RA',
+        '3347251873',
         'portasfiga1099@gmail.com', '2022-10-15', TRUE, NULL),
-       ('Biagi', 'Giacomo', '2003-10-20', 'Via G. Morgagni 49', 'Classe', '48124', 'RA', '3347251873',
+       ('Biagi', 'Giacomo', 'GCCVLR03TTTTTTTT', '2003-10-20', 'Via G. Morgagni 49', 'Classe', '48124', 'RA',
+        '3347251873',
         'portasfiga1099@gmail.com', '2022-10-15', TRUE, 5),
-       ('Pierantoni', 'Lorenzo', '2003-10-20', 'Via G. Morgagni 49', 'Classe', '48124', 'RA', '3347251873',
+       ('Pierantoni', 'Lorenzo', 'GCCVLR03TTTTTTTT', '2003-10-20', 'Via G. Morgagni 49', 'Classe', '48124', 'RA',
+        '3347251873',
         'portasfiga1099@gmail.com', '2022-10-15', TRUE, 5),
-       ('Biagi', 'Giacomo', '2003-10-20', 'Via G. Morgagni 49', 'Classe', '48124', 'RA', '3347251873',
+       ('Biagi', 'Giacomo', 'GCCVLR03TTTTTTTT', '2003-10-20', 'Via G. Morgagni 49', 'Classe', '48124', 'RA',
+        '3347251873',
         'portasfiga1099@gmail.com', '2022-10-15', TRUE, 5),
-       ('Pierantoni', 'Lorenzo', '2003-10-20', 'Via G. Morgagni 49', 'Classe', '48124', 'RA', '3347251873',
+       ('Pierantoni', 'Lorenzo', 'GCCVLR03TTTTTTTT', '2003-10-20', 'Via G. Morgagni 49', 'Classe', '48124', 'RA',
+        '3347251873',
         'portasfiga1099@gmail.com', '2022-10-15', TRUE, 5),
-       ('Biagi', 'Giacomo', '2003-10-20', 'Via G. Morgagni 49', 'Classe', '48124', 'RA', '3347251873',
+       ('Biagi', 'Giacomo', 'GCCVLR03TTTTTTTT', '2003-10-20', 'Via G. Morgagni 49', 'Classe', '48124', 'RA',
+        '3347251873',
         'portasfiga1099@gmail.com', '2022-10-15', TRUE, 5),
-       ('Pierantoni', 'Lorenzo', '2003-10-20', 'Via G. Morgagni 49', 'Classe', '48124', 'RA', '3347251873',
+       ('Pierantoni', 'Lorenzo', 'GCCVLR03TTTTTTTT', '2003-10-20', 'Via G. Morgagni 49', 'Classe', '48124', 'RA',
+        '3347251873',
         'portasfiga1099@gmail.com', '2022-10-15', TRUE, 5),
-       ('Biagi', 'Giacomo', '2003-10-20', 'Via G. Morgagni 49', 'Classe', '48124', 'RA', '3347251873',
+       ('Biagi', 'Giacomo', 'GCCVLR03TTTTTTTT', '2003-10-20', 'Via G. Morgagni 49', 'Classe', '48124', 'RA',
+        '3347251873',
         'portasfiga1099@gmail.com', '2022-10-15', TRUE, 5),
-       ('Pierantoni', 'Lorenzo', '2003-10-20', 'Via G. Morgagni 49', 'Classe', '48124', 'RA', '3347251873',
+       ('Pierantoni', 'Lorenzo', 'GCCVLR03TTTTTTTT', '2003-10-20', 'Via G. Morgagni 49', 'Classe', '48124', 'RA',
+        '3347251873',
         'portasfiga1099@gmail.com', '2022-10-15', TRUE, 5),
-       ('Gianmattina', 'Mattia', '2003-10-20', 'Via G. Morgagni 49', 'Classe', '48124', 'RA', '3347251873',
+       ('Gianmattina', 'Mattia', 'GCCVLR03TTTTTTTT', '2003-10-20', 'Via G. Morgagni 49', 'Classe', '48124', 'RA',
+        '3347251873',
         'portasfiga1099@gmail.com', '2022-10-15', TRUE, 4);
 
-INSERT INTO `team` (`id`, `role`)
+INSERT INTO `team` (`id`, `role_id`)
 VALUES (1, 4);
 
 INSERT INTO `users` (`username`, `password`, `team`)
