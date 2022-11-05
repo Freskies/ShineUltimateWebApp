@@ -38,52 +38,53 @@ $inactive_courses = $conn->execute($query);
             document.getElementById('show-hide-button').innerHTML = 'Show All';
             document.getElementById('show-hide-button').setAttribute('onclick', 'show()');
 
-            <?php foreach ($inactive_courses as $course) { ?>
+			<?php foreach ($inactive_courses as $course) { ?>
             document.getElementById('course-<?= $course['id'] ?>').setAttribute('hidden', 'true');
-            <?php } ?>
+			<?php } ?>
         }
 
         function show() {
             document.getElementById('show-hide-button').innerHTML = 'Hide Inactive';
             document.getElementById('show-hide-button').setAttribute('onclick', 'hide()');
 
-            <?php foreach ($inactive_courses as $course) { ?>
+			<?php foreach ($inactive_courses as $course) { ?>
             document.getElementById('course-<?= $course['id'] ?>').removeAttribute('hidden');
-            <?php } ?>
+			<?php } ?>
         }
     </script>
 </head>
 <body>
 <div class="container">
     <h1>Welcome <?php echo $_SESSION['user'] ?></h1>
+    <!-- section with the buttons of the courses -->
     <div id="courses_list">
-        <!--
-        creare una lista di pulsanti con i vari corsi
-        normalmente si devono visualizzare solo i corsi attivi
-        ma cliccando sul pulsante "Show all" si devono visualizzare anche i corsi non attivi
-        con javascript si devono creare tutti i bottoni con i corsi
-        dentro la variabile $courses_list ci sono tutti i corsi (anche quelli non attivi)
-        -->
+        <!-- section with the active buttons
+         every active buttons is showed as a primary button
+         -->
         <div id="active_courses_div">
-	        <?php
-	        foreach ($active_courses as $course) { ?>
+			<?php
+			foreach ($active_courses as $course) { ?>
                 <a href="User/course.php?id=<?php echo $course['id'] ?>"
                    id="course-<?php echo $course['id'] ?>"
                    class="btn btn-primary"><?php echo $course['name'] ?></a>
-		        <?php
-	        }
-	        ?>
+				<?php
+			}
+			?>
         </div>
-		<div id="inactive_couses_div">
-            <?php
-            foreach ($inactive_courses as $course) { ?>
-                <a href="User/course.php?id=<?php echo $course['id']?>"
+        <!-- section with the inactive buttons
+		every active buttons is showed as a secondary button
+		the inactive buttons are hidden by default
+		-->
+        <div id="inactive_courses_div">
+			<?php
+			foreach ($inactive_courses as $course) { ?>
+                <a href="User/course.php?id=<?php echo $course['id'] ?>"
                    id="course-<?php echo $course['id'] ?>"
                    class="btn btn-secondary"
-                   hidden><?php echo $course['name']  . ' ' . $course['year']?></a>
-                <?php
-            }
-            ?>
+                   hidden><?php echo $course['name'] . ' ' . $course['year'] ?></a>
+				<?php
+			}
+			?>
         </div>
         <button id="show-hide-button" class="btn btn-primary"></button>
         <script> hide(); </script>
