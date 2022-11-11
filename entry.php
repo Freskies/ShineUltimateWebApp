@@ -36,6 +36,8 @@ $inactive_courses_list = array_filter($courses, function ($course) use ($year) {
 foreach ($inactive_courses_list as $course) {
 	$inactive_courses[$course['year']][] = $course;
 }
+// sort the list by year, from the most recent to the oldest
+krsort($inactive_courses);
 ?>
 
 <!DOCTYPE html>
@@ -72,16 +74,15 @@ foreach ($inactive_courses_list as $course) {
 			<?php
 		} ?>
 
-
         <!-- TODO clickable button for each year in which there was at least one course -->
 		<?php foreach ($inactive_courses as $year) { ?>
-            <a class="btn-secondary"
+            <a class="btn btn-secondary"
                onclick=""
-               id="<?php echo $year[0]['year']; ?>">
+               id="<?php echo 'courses-' . $year[0]['year']; ?>">
                 <?php echo $year[0]['year']; ?></a>
 			<?php foreach ($year as $course) { ?>
                 <a href="User/course.php?id=<?php echo $course['id'] ?>"
-                   id="course-<?php echo $course['id'] ?>"
+                   id="course-<?php echo $course['id'] . '-' . $year[0]['year'] ?>"
                    class="btn btn-secondary"
                    hidden><?php echo $course['name'] ?></a>
 				<?php
