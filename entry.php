@@ -13,90 +13,90 @@ if (!isset($_SESSION['user']))
 
 require_once 'Libraries/Connection.php';
 require_once 'Libraries/Year.php';
+require_once 'Libraries/Course.php';
 
 // get the current year, if the current year is 2021, the string will be "2021-2022"
-$year = new Year();
+$year = Year::getCurrentYear();
 
 // get the list of the courses
 $conn = new Connection('shine');
-$query = 'SELECT * FROM course ORDER BY year, name;';
-$courses = $conn->execute($query);
+$query = 'SELECT * FROM course ORDER BY year DESC, name;';
+$courses_table = $conn->execute($query);
 
-// extract the list of active courses from the list of courses
-$active_courses = array_filter($courses, function ($course) use ($year) {
-	return $course['year'] == $year . '';
-});
+// transform the table into an array of Course objects
+$courses = array();
+foreach ($courses_table as $course)
+	$courses[] = new Course($course['id'], $course['name'], new Year(substr($course['year'], 0, 4)));
 
-// create a list name $inactive_courses with the inactive courses
-// the list is composed like this [year => [course1, course2, ...], year2 => [...]]
-$inactive_courses = [];
-$inactive_courses_list = array_filter($courses, function ($course) use ($year) {
-	return $course['year'] != $year . '';
-});
-foreach ($inactive_courses_list as $course) {
-	$inactive_courses[$course['year']][] = $course;
-}
-// sort the list by year, from the most recent to the oldest
-krsort($inactive_courses);
+// get the list of active courses
+$active_courses = Course::getActiveCourses($courses);
+
+// get the list of inactive courses
+$inactive_courses = Course::getInactiveCourses($courses);
+
+// get the list of years in which there are courses
+$years = array();
+foreach ($inactive_courses as $course)
+	$years[] = $course->getYear();
+$years = array_unique($years);
+
 ?>
 
 <!DOCTYPE html>
 <html lang="it">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Shine</title>
-    <link rel="stylesheet"
-          href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
-          integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
-          crossorigin="anonymous">
-    <script>
-
-    </script>
+    <!-- import bootstrap 5.1 css -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <link rel="stylesheet" href="Libraries/stylesheet.css">
 </head>
 <body>
 <div class="container">
-    <h1>Welcome <?php echo $_SESSION['user'] ?></h1>
+    <h1>Welcome <?php echo $_SESSION['user']; ?></h1>
     <!-- section with the buttons of the courses -->
     <div id="courses_list">
-        <!--
-        first there is a button for each active course,
-        an active course is a course that is in the current year
+        <div class="dropdown">
+            <!-- ACTIVE COURSES -->
+            <!-- INACTIVE COURSES -->
+            <button class="btn btn-info dropdown-toggle" type="button" id="inactive_courses_dropdown"
+                    data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Inactive courses
+            </button>
+            <div class="dropdown-menu" aria-labelledby="inactive_courses_dropdown">
+				<?php foreach ($years as $year): ?>
+                    <div class="dropdown dropend">
+                        <a class="dropdown-item dropdown-toggle" href="#"
+                           id="<?php echo 'dropdown_submenu_toggle' . $year ?>"
+                           data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><?php echo $year; ?></a>
+                        <div class="dropdown-menu" aria-labelledby="<?php echo 'dropdown_submenu_toggle' . $year ?>">
+							<?php foreach (Course::getCoursesFromYear($year, $inactive_courses) as $course): ?>
+                                <a class="dropdown-item"
+                                   href="User/course.php?id=<?php echo $course->getId() ?>">
+									<?php echo $course->getName() ?></a>
+							<?php endforeach; ?>
+                        </div>
+                    </div>
+				<?php endforeach; ?>
+            </div>
+        </div>
 
-        second there is a button for each past year in which there was at least one course,
-        an inactive course is a course that is not in the current year
-        when the user clicks on the button,
-        the list of the inactive courses in that year is shown between the button and the next button
-        -->
-		<?php foreach ($active_courses as $course) { ?>
-            <a href="User/course.php?id=<?php echo $course['id'] ?>"
-               id="course-<?php echo $course['id'] ?>"
-               class="btn btn-primary"><?php echo $course['name'] ?></a>
-			<?php
-		} ?>
-
-        <!-- TODO clickable button for each year in which there was at least one course -->
-		<?php foreach ($inactive_courses as $year) { ?>
-            <a class="btn btn-secondary"
-               onclick=""
-               id="<?php echo 'courses-' . $year[0]['year']; ?>">
-                <?php echo $year[0]['year']; ?></a>
-			<?php foreach ($year as $course) { ?>
-                <a href="User/course.php?id=<?php echo $course['id'] ?>"
-                   id="course-<?php echo $course['id'] . '-' . $year[0]['year'] ?>"
-                   class="btn btn-secondary"
-                   hidden><?php echo $course['name'] ?></a>
-				<?php
-			}
-        } ?>
+        <!-- manage courses button and manage athletes -->
+        <div id="anal">
+            <h2>Admin</h2>
+            <a href="Admin/manage_courses.php" class="btn btn-primary">Manage courses</a>
+            <a href="Admin/manage_athletes.php" class="btn btn-primary">Manage athletes</a>
+        </div>
+        <br><a href="logout.php">logout</a>
     </div>
 
-</div>
-<div>
-    <!-- manage courses button and manage athletes -->
-    <h2>Admin</h2>
-    <a href="Admin/manage_courses.php" class="btn btn-primary">Manage courses</a>
-    <a href="Admin/manage_athletes.php" class="btn btn-primary">Manage athletes</a>
-</div>
-<br><a href="logout.php">logout</a>
-</div>
+    <!-- import bootstrap 5.1 js -->
+    <script src="https://unpkg.com/@popperjs/core@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
+            crossorigin="anonymous"></script>
+    <script src="Libraries/bootstrap_nested_dropdown.js"></script>
 </body>
+</html>
