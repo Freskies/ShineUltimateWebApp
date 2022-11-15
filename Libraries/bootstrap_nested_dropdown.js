@@ -14,9 +14,8 @@
                 e.classList.remove(CLASS_NAME);
             });
             let dd = this._element.closest('.dropdown').parentNode.closest('.dropdown');
-            for (; dd && dd !== document; dd = dd.parentNode.closest('.dropdown')) {
+            for (; dd && dd !== document; dd = dd.parentNode.closest('.dropdown'))
                 dd.classList.add(CLASS_NAME);
-            }
             return _original.call(this);
         }
     }($bs.Dropdown.prototype.toggle);
@@ -43,9 +42,8 @@
         });
         dd.addEventListener('mouseleave', function (e) {
             let toggle = e.target.querySelector(':scope>[data-bs-toggle="dropdown"]');
-            if (toggle.classList.contains('show')) {
+            if (toggle.classList.contains('show'))
                 $bs.Dropdown.getOrCreateInstance(toggle).toggle();
-            }
         });
     });
 })(bootstrap);

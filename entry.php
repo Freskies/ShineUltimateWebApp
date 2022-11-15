@@ -26,7 +26,7 @@ $courses_table = $conn->execute($query);
 // transform the table into an array of Course objects
 $courses = array();
 foreach ($courses_table as $course)
-	$courses[] = new Course($course['id'], $course['name'], new Year(substr($course['year'], 0, 4)));
+	$courses[] = new Course($course['id'], $course['name'], new Year($course['year']));
 
 // get the list of active courses
 $active_courses = Course::getActiveCourses($courses);
@@ -59,8 +59,13 @@ $years = array_unique($years);
     <!-- section with the buttons of the courses -->
     <div id="courses_list">
         <div class="dropdown">
-            <!-- ACTIVE COURSES -->
-            <!-- INACTIVE COURSES -->
+            <!-- ACTIVE COURSES (button for every course) -->
+            <?php foreach ($active_courses as $course): ?>
+                <a class="btn btn-primary" href="User/course.php?id=<?php echo $course->getId() ?>">
+                    <?php echo $course->getName() ?>
+                </a>
+            <?php endforeach; ?>
+            <!-- INACTIVE COURSES (dropdown menu) -->
             <button class="btn btn-info dropdown-toggle" type="button" id="inactive_courses_dropdown"
                     data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 Inactive courses
@@ -70,7 +75,7 @@ $years = array_unique($years);
                     <div class="dropdown dropend">
                         <a class="dropdown-item dropdown-toggle" href="#"
                            id="<?php echo 'dropdown_submenu_toggle' . $year ?>"
-                           data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><?php echo $year; ?></a>
+                           data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><?php echo $year ?></a>
                         <div class="dropdown-menu" aria-labelledby="<?php echo 'dropdown_submenu_toggle' . $year ?>">
 							<?php foreach (Course::getCoursesFromYear($year, $inactive_courses) as $course): ?>
                                 <a class="dropdown-item"

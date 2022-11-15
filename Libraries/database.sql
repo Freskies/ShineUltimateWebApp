@@ -8,12 +8,6 @@ DROP DATABASE IF EXISTS `shine`;
 CREATE DATABASE `shine`;
 USE `shine`;
 
-CREATE TABLE `year`
-(
-    `year` varchar(9) NOT NULL,
-    PRIMARY KEY (`year`)
-) ENGINE = InnoDB;
-
 # athlete
 CREATE TABLE `athlete`
 (
@@ -58,11 +52,10 @@ CREATE TABLE `course`
 (
     `id`                 INT           NOT NULL AUTO_INCREMENT,
     `name`               VARCHAR(32)   NOT NULL,
-    `year`               VARCHAR(9)    NOT NULL, # year when the course is started
+    `year`               VARCHAR(4)    NOT NULL, # year when the course is started
     `default_start_time` TIME          NOT NULL, # default start time for the course
     `default_duration`   DECIMAL(4, 2) NOT NULL, # default duration for lessons in the course
-    PRIMARY KEY (`id`),
-    FOREIGN KEY (`year`) REFERENCES `year` (`year`)
+    PRIMARY KEY (`id`)
 ) ENGINE = InnoDB;
 
 # admin role for the team
@@ -144,13 +137,6 @@ CREATE TABLE `users`
     FOREIGN KEY (`team`) REFERENCES `team` (`id`)
 ) ENGINE = InnoDB;
 
-INSERT INTO `year` (`year`)
-VALUES ('2019-2020'),
-       ('2020-2021'),
-       ('2021-2022'),
-       ('2022-2023'),
-       ('2023-2024');
-
 INSERT INTO `role` (`id`, `name`, `description`)
 VALUES (1, 'Presidente', 'presidente della associazione'),
        (2, 'Vide-presidente', 'vice presidente della associazione'),
@@ -164,15 +150,15 @@ VALUES (1, 'learning', 0.00),
        (3, 'coaching', 12.00);
 
 INSERT INTO `course` (`id`, `name`, `year`, `default_start_time`, `default_duration`)
-VALUES (1, '4-5', '2021-2022', '18:00', 1),
-       (2, '6-7', '2021-2022', '18:00', 1),
-       (3, '8-9', '2021-2022', '18:00', 1.30),
-       (4, '10-11', '2021-2022', '19:30', 1.30),
-       (5, '12-13', '2021-2022', '18:00', 2),
-       (6, '14+', '2021-2022', '19:00', 2),
-       (7, 'Adults', '2021-2022', '20:00', 1.30),
-       (8, 'Adults', '2020-2021', '20:00', 1.30),
-       (9, 'Adults', '2022-2023', '20:00', 1.30);
+VALUES (1, '4-5', '2021', '18:00', 1),
+       (2, '6-7', '2021', '18:00', 1),
+       (3, '8-9', '2021', '18:00', 1.30),
+       (4, '10-11', '2021', '19:30', 1.30),
+       (5, '12-13', '2021', '18:00', 2),
+       (6, '14+', '2021', '19:00', 2),
+       (7, 'Adults', '2021', '20:00', 1.30),
+       (8, 'Adults', '2020', '20:00', 1.30),
+       (9, 'Adults', '2022', '20:00', 1.30);
 
 INSERT INTO `athlete` (`surname`, `name`, `fiscal_code`, `birthdate`, `address`, `city`, `cap`, `province`, `phone`,
                        `email`,

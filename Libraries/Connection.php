@@ -8,6 +8,7 @@
 /**
  * this class facilitates querying databases.
  * it uses a mysqli connection.
+ * this class uses PHP 8 features.
  *
  * @author valerio
  * @version 1.0
